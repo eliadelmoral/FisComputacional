@@ -64,7 +64,7 @@ int main()
 
     
     r=0.017268;  // Radio de la Tierra reescalado en términos de la distancia Tierra-Luna (RT/dTL)
-    phi=PI/7.0; //que salga entre el ecuador y el hemisferio norte
+    phi=PI/8.0; //que salga entre el ecuador y el hemisferio norte
     v_inicial=11000.0/dTL; //la velocidad inicial del cohete debe ser la velocidad de escape (también en términos de la distancia Tierra-Luna)
 
     
@@ -115,7 +115,7 @@ int main()
 
         if (y[0]>0.85 && y[0]<1.05)
         {
-            h=60.0;
+            h=100.0;
             //reiniciamos las iteraciones 
             i=0;
             iter=tmax/h;
