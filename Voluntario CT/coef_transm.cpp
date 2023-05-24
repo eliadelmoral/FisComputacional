@@ -162,6 +162,8 @@ int main()
 
     m_T=0;
     n_D=0;
+    P_d=0.0;
+    P_d_antes=0.0;
 
 
     for (n=0; n<t; n++)
@@ -261,8 +263,11 @@ int main()
 
         P_d=0.0;
 
-        for(j=round(4.0*n/5.0); j=N; j++)
+        for(j=4.0*N/5.0; j<N; j++)
         {
+            phi[j]=chi[j]-phi[j];
+            norma=norma+pow(abs(phi[j]),2);
+
             P_d=P_d+norma;
         }
 
