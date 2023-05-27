@@ -51,10 +51,11 @@ file_in = "planets_data.dat" # Nombre del fichero de datos
 file_out = "planetas" # Nombre del fichero de salida (sin extensión)
 
 # Límites de los ejes X e Y
-x_min = -2.5
-x_max = 2.0
-y_min = -2.5
-y_max = 2.5
+x_min = -3.5
+x_max = 3.5
+y_min = -3.5
+y_max = 3.5
+
 
 
 plt.title('$θ<sub>1=θ<sub>2=5$')
