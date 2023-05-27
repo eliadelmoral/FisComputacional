@@ -51,12 +51,15 @@ file_in = "planets_data.dat" # Nombre del fichero de datos
 file_out = "planetas" # Nombre del fichero de salida (sin extensión)
 
 # Límites de los ejes X e Y
-x_min = -2
-x_max = 2
-y_min = -2
-y_max = 2
+x_min = -2.5
+x_max = 2.0
+y_min = -2.5
+y_max = 2.5
 
-interval = 1 # Tiempo entre fotogramas en milisegundos
+
+plt.title('$θ<sub>1=θ<sub>2=5$')
+
+interval = 80 # Tiempo entre fotogramas en milisegundos
 show_trail = True # Muestra la "estela" del planeta
 trail_width = 1 # Ancho de la estela
 save_to_file = True # False: muestra la animación por pantalla,
@@ -66,8 +69,10 @@ dpi = 150 # Calidad del vídeo de salida (dots per inch)
 # Radio del planeta, en las mismas unidades que la posición
 # Puede ser un número (el radio de todos los planetas) o una lista con
 # el radio de cada uno
-planet_radius = [0.05, 0.05, 0.02]
+planet_radius = [0.05]
 #planet_radius = [0.5, 0.7, 1.1]
+
+
 
 
 # Lectura del fichero de datos
