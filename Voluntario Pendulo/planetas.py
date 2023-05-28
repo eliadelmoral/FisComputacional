@@ -51,14 +51,11 @@ file_in = "planets_data.dat" # Nombre del fichero de datos
 file_out = "planetas" # Nombre del fichero de salida (sin extensión)
 
 # Límites de los ejes X e Y
-x_min = -3.5
-x_max = 3.5
-y_min = -3.5
-y_max = 3.5
+x_min = -10
+x_max = 10
+y_min = -10
+y_max = 10
 
-
-
-plt.title('$θ<sub>1=θ<sub>2=5$')
 
 interval = 80 # Tiempo entre fotogramas en milisegundos
 show_trail = True # Muestra la "estela" del planeta
@@ -119,6 +116,13 @@ fig, ax = plt.subplots()
 ax.axis("equal")  # Misma escala para ejes X e Y
 ax.set_xlim(x_min, x_max)
 ax.set_ylim(y_min, y_max)
+
+
+
+plt.title('ψ_inic=π/4; Ф_inic=π/4; E=15')
+
+plt.xlabel('ψ')
+plt.ylabel('v_ψ')
 
 # Si solo se ha dado un radio para todos los planetas, conviértelo a una
 # lista con todos los elementos iguales

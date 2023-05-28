@@ -20,14 +20,10 @@ using namespace std;
 
 int main()
 {   
-    double h, t, tmax; //paso y variable temporal
+    double h, tmax; //paso y variable temporal
     double y[4], k1[4], k2[4], k3[4], k4[4]; //4 ecuaciones diferenciales y las funciones ki para aplicar el algoritmo
     double aux1[4], aux2[4], aux3[4]; //vectores auxiliares para facilitar el cálculo de ki
     double O1, O2, pO1, pO2;
-    
-
-    double E;
-    double vO1, vO2;
 
     
     double pos_x1, pos_y1, pos_x2, pos_y2; //para transformar las coordenadas polares en cartesianas para representarlo
@@ -36,33 +32,21 @@ int main()
     int i, j, iter;
     
 
-    ofstream fich_O1_pO1;
+    ofstream fich_posiciones;
+    ofstream fich_O1_vO1;
+    ofstream fich_O2_vO2;
 
 
-    //Condiciones iniciales 
+    //Condiciones iniciales
 
     h=0.1;
     tmax=100.0;
     iter=tmax/h;
 
-
-    O1=PI/4.0;
-    O2=PI/4.0;
-
-
-    //Valor de la energía (que coincide con el Hamiltoniano) y velocidades angulares iniciales
-    E=15.0;
-
-    //vO1=sqrt(E-2.0*g*(1.0-cos(O1))-g*(1.0-cos(O2)));
-    //vO2=0.0;
-    //pO1=(2*(1.0+pow(sin(O1-O2),2))*vO1)/cos(O1-O2);
-    //pO2=vO1*(1.0+pow(sin(O1-O2),2));
-
-
-    vO1=0.0;
-    vO2=sqrt(2*(E-2.0*g*(1.0-cos(O1))-g*(1.0-cos(O2))));
-    pO1=vO2*(1+pow(sin(O1-O2),2))*cos(O1-O2)/(2-pow(cos(O1-O2),2));
-    pO2=vO2*(1+pow(sin(O1-O2),2))/(2-pow(cos(O1-O2),2));
+    O1=PI/2.0;
+    O2=PI/2.0;
+    pO1=0.0;
+    pO2=0.0;
 
 
     //Almaceno en el vector y las condiciones iniciales antes de comenzar el proceso iterativo
@@ -75,26 +59,28 @@ int main()
 
     //Posiciones de las masas en coordenadas cartesianas
     pos_x1=sin(y[0]);
-    pos_y1=-cos(y[0]);
+    pos_y1=-1.0*cos(y[0]);
     pos_x2=sin(y[1])+sin(y[0]);
-    pos_y2=-cos(y[1])-cos(y[0]);
+    pos_y2=-1.0*cos(y[1])-1.0*cos(y[0]);
 
 
 
     //Empiezo el proceso iterativo
 
-    fich_O1_pO1.open("planets_data.dat");
+    fich_posiciones.open("planets_data.dat");
+    
 
     for (i=0; i<=iter; i++)
     {
 
         //Escribo en un fichero de texto los datos de las posiciones para representarlas después
 
-        fich_O1_pO1 << y[1] << ", " << vO2 << endl;
-        fich_O1_pO1 << endl;
-    
+        fich_posiciones << pos_x1 << ", " << pos_y1 << endl;
+        fich_posiciones << pos_x2 << ", " << pos_y2 << endl;
+        fich_posiciones << endl;
 
-        
+
+
         //Calculo k1 para cada variable
         k1[0]=h*f1(y[0], y[1], y[2], y[3]);
         k1[1]=h*f2(y[0], y[1], y[2], y[3]);
@@ -153,15 +139,20 @@ int main()
         {
             y[j]=y[j]+1.0/6.0*(k1[j]+2.0*k2[j]+2.0*k3[j]+k4[j]);
         }
+
+
+
+        //paso de coordenadas polares a cartesianas
+
+        pos_x1=sin(y[0]);
+        pos_y1=-1.0*cos(y[0]);
+        pos_x2=sin(y[1])+sin(y[0]);
+        pos_y2=-1.0*cos(y[1])-1.0*cos(y[0]);
         
-       //vO1=f1(y[0], y[1], y[2], y[3]);
-       vO2=f2(y[0], y[1], y[2], y[3]);
-
-
 
     }
 
-    fich_O1_pO1.close();
+    fich_posiciones.close();
 
 
 
@@ -182,7 +173,7 @@ double f1(double O1, double O2, double pO1, double pO2)
 {
     double f1;
 
-    f1=(pO1-pO2*cos(O1-O2))/(1+pow(sin(O1-O2),2));
+    f1=(pO1-1.0*pO2*cos(O1-O2))/(1.0+pow(sin(O1-O2),2));
 
     return f1;
 
@@ -194,7 +185,7 @@ double f2(double O1, double O2, double pO1, double pO2)
 {
     double f2;
 
-    f2=(-1.0*pO1*cos(O1-O2)+2*pO2)/(1+pow(sin(O1-O2),2));
+    f2=(-1.0*pO1*cos(O1-O2)+2.0*pO2)/(1.0+pow(sin(O1-O2),2));
 
     return f2;
 }
@@ -203,9 +194,11 @@ double f2(double O1, double O2, double pO1, double pO2)
 
 double f3(double O1, double O2, double pO1, double pO2)
 {
-    double f3;
+    double f3,h1,h2;
 
-    f3=-2.0*g*sin(O1)-(pO1*pO2*sin(O1-O2))/(1+pow(sin(O1-O2),2))+(pO1*pO1+2.0*pO2*pO2-2.0*pO1*pO2*cos(O1-O2))*sin(2.0*(O1-O2))/(2.0*pow((1+pow(sin(O1-O2),2)),2));
+    h1=pO1*pO2*sin(O1-O2)/(1.0+pow(sin(O1-O2),2));
+    h2=(pO1*pO1+2.0*pO2*pO2-2.0*pO1*pO2*cos(O1-O2))/(2*pow(1.0+pow(sin(O1-O2),2),2));
+    f3=-2.0*g*sin(O1)-h1+h2*sin(2*(O1-O2));
 
     return f3;
 }
@@ -213,9 +206,11 @@ double f3(double O1, double O2, double pO1, double pO2)
 
 double f4(double O1, double O2, double pO1, double pO2)
 {
-    double f4;
+    double f4,h1,h2;
 
-    f4=-1.0*g*sin(O2)+(pO1*pO2*sin(O1-O2))/(1+pow(sin(O1-O2),2))-(pO1*pO1+2.0*pO2*pO2-2.0*pO1*pO2*cos(O1-O2))*sin(2.0*(O1-O2))/(2.0*pow((1+pow(sin(O1-O2),2)),2));
+    h1=pO1*pO2*sin(O1-O2)/(1.0+pow(sin(O1-O2),2));
+    h2=(pO1*pO1+2.0*pO2*pO2-2.0*pO1*pO2*cos(O1-O2))/(2*pow(1.0+pow(sin(O1-O2),2),2));
+    f4=-1.0*g*sin(O2)+h1-h2*sin(2*(O1-O2));
 
     return f4;
 }
