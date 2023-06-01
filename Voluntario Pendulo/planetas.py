@@ -51,10 +51,10 @@ file_in = "planets_data.dat" # Nombre del fichero de datos
 file_out = "planetas" # Nombre del fichero de salida (sin extensión)
 
 # Límites de los ejes X e Y
-x_min = -10
-x_max = 10
-y_min = -10
-y_max = 10
+x_min = -2
+x_max = 2
+y_min = -2
+y_max = 2
 
 
 interval = 80 # Tiempo entre fotogramas en milisegundos
@@ -121,8 +121,8 @@ ax.set_ylim(y_min, y_max)
 
 plt.title('ψ_inic=π/4; Ф_inic=π/4; E=15')
 
-plt.xlabel('ψ')
-plt.ylabel('v_ψ')
+plt.xlabel('Ф')
+plt.ylabel('ψ')
 
 # Si solo se ha dado un radio para todos los planetas, conviértelo a una
 # lista con todos los elementos iguales
