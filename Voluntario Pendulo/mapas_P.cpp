@@ -23,7 +23,7 @@ int main()
     double h, t, tmax; //paso y variable temporal
     double y[4], k1[4], k2[4], k3[4], k4[4]; //4 ecuaciones diferenciales y las funciones ki para aplicar el algoritmo
     double aux1[4], aux2[4], aux3[4]; //vectores auxiliares para facilitar el cálculo de ki
-    double O1, O2, pO1, pO2;
+    double O1, O2, pO1, pO2; //la variable O1 es el ángulo phi y la variable O2 es el ángulo psi
     
 
     double E;
@@ -46,23 +46,23 @@ int main()
     iter=tmax/h;
 
 
-    O1=PI/4.0;
-    O2=PI/4.0;
+    O1=PI/2.0;
+    O2=PI;
 
 
     //Valor de la energía (que coincide con el Hamiltoniano) y velocidades angulares iniciales
-    E=15.0;
+    E=50.0;
 
-    vO1=sqrt(E-2.0*g*(1.0-cos(O1))-g*(1.0-cos(O2)));
-    vO2=0.0;
-    pO1=(2*(1.0+pow(sin(O1-O2),2))*vO1)/cos(O1-O2);
-    pO2=vO1*(1.0+pow(sin(O1-O2),2));
+    //vO1=sqrt(E-2.0*g*(1.0-cos(O1))-g*(1.0-cos(O2)));
+    //vO2=0.0;
+    //pO1=(2*(1.0+pow(sin(O1-O2),2))*vO1)/cos(O1-O2);
+    //pO2=vO1*(1.0+pow(sin(O1-O2),2));
 
 
-    //vO1=0.0;
-    //vO2=sqrt(2*(E-2.0*g*(1.0-cos(O1))-g*(1.0-cos(O2))));
-    //pO1=vO2*(1+pow(sin(O1-O2),2))*cos(O1-O2)/(2-pow(cos(O1-O2),2));
-    //pO2=vO2*(1+pow(sin(O1-O2),2))/(2-pow(cos(O1-O2),2));
+    vO1=0.0;
+    vO2=sqrt(2*(E-2.0*g*(1.0-cos(O1))-g*(1.0-cos(O2))));
+    pO1=vO2*(1+pow(sin(O1-O2),2))*cos(O1-O2)/(2-pow(cos(O1-O2),2));
+    pO2=vO2*(1+pow(sin(O1-O2),2))/(2-pow(cos(O1-O2),2));
 
 
     //Almaceno en el vector y las condiciones iniciales antes de comenzar el proceso iterativo
@@ -106,9 +106,8 @@ int main()
 
             //Escribo en un fichero de texto los datos de las posiciones para representarlas después
 
-            fich_O1_pO1 << y[0] << ", " << y[1] << endl;
+            fich_O1_pO1 << y[0] << ", " << vO1 << endl;
             fich_O1_pO1 << endl;
-    
 
         
             //Calculo k1 para cada variable

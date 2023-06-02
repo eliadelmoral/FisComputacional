@@ -51,10 +51,10 @@ file_in = "planets_data.dat" # Nombre del fichero de datos
 file_out = "planetas" # Nombre del fichero de salida (sin extensión)
 
 # Límites de los ejes X e Y
-x_min = -2
-x_max = 2
-y_min = -2
-y_max = 2
+x_min = -13
+x_max = 13
+y_min = -13
+y_max = 13
 
 
 interval = 80 # Tiempo entre fotogramas en milisegundos
@@ -67,7 +67,7 @@ dpi = 150 # Calidad del vídeo de salida (dots per inch)
 # Radio del planeta, en las mismas unidades que la posición
 # Puede ser un número (el radio de todos los planetas) o una lista con
 # el radio de cada uno
-planet_radius = [0.05]
+planet_radius = [0.1]
 #planet_radius = [0.5, 0.7, 1.1]
 
 
@@ -119,10 +119,10 @@ ax.set_ylim(y_min, y_max)
 
 
 
-plt.title('ψ_inic=π/4; Ф_inic=π/4; E=15')
+plt.title('ψ_inic=π; Ф_inic=π/2; E=50')
 
 plt.xlabel('Ф')
-plt.ylabel('ψ')
+plt.ylabel('v_Ф')
 
 # Si solo se ha dado un radio para todos los planetas, conviértelo a una
 # lista con todos los elementos iguales
