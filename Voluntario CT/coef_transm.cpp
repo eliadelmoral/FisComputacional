@@ -3,10 +3,14 @@
 #include <complex>
 #include <fstream>
 #include <time.h>
+#include "gsl_rng.h"
+
 
 
 #define MAX 1000
 #define PI 3.14159265
+
+gsl_rng *tau;
 
 
 using namespace std;
@@ -14,9 +18,10 @@ using namespace std;
 
 int main()
 {
-    int j, n, t;
-    int m_T, n_D;
-    int K;
+    int j, n, t, i;
+    int n_D;
+    double m_T;
+    double K, K_teo;
     double p, P_d, P_d_antes, P_d_max;
 
 
@@ -37,11 +42,16 @@ int main()
     complex<double> Ecinetica;
     complex<double> Etotal;
     complex<double> phi1[MAX], phi2[MAX];
+
+
+    //generador de números aleatorios
+    extern gsl_rng *tau;
+    int semilla=1297534;
+
+    tau=gsl_rng_alloc(gsl_rng_taus); //puntero
+    gsl_rng_set(tau,semilla);
     
 
-
-
-    srand(time(NULL));
 
 
 
@@ -51,7 +61,6 @@ int main()
     ofstream fich_funcion;
     ofstream fich_norma;
     ofstream fich_K;
-    ofstream fich_Pdmax;
     ofstream fich_posi;
     ofstream fich_energias;
     ofstream fich_momento;
@@ -67,11 +76,30 @@ int main()
 
     //Establezco el número de iteraciones, la longitud de onda, el número de ciclos, s y h
 
-    N=500;
-    lambda=0.1;
+    N=1250;
+    lambda=0.5;
     n_ciclos=(double)N/16.0; //Si n_ciclos=N/4 la frecuencia es demasiado alta y no se distinguen bien la parte real e imaginaria
-    t=500; 
+    t=1000; 
 
+
+    //Calculo el coeficiente de transmisión teórico
+    
+    if(lambda<1)
+    {
+        K_teo=4*(1-lambda)/(4*(1-lambda)+pow(lambda,2)*pow(sin(2*PI/5*n_ciclos*sqrt(1-lambda)),2));
+    }
+    
+    else if(lambda>1)
+    {
+        K_teo=4*(lambda-1)/(4*(lambda-1)+pow(lambda,2)*pow(sinh(2*PI/5*n_ciclos*sqrt(lambda-1)),2));
+    }
+
+    else if(lambda==1)
+    {
+        K=0.0;
+    }
+    
+    
 
 
     //Calculo los parámetros iniciales
@@ -154,13 +182,12 @@ int main()
     fich_funcion.open("schrodinger_data.dat");
     fich_norma.open("norma.txt");
     fich_K.open("coef_trans.txt");
-    fich_Pdmax.open("Pdmax.txt");
     fich_posi.open("posicion.txt");
     fich_energias.open("energias.txt");
     fich_momento.open("momento.txt");
     fich_probabilidad.open("P_D.txt");
 
-    m_T=0;
+    m_T=0.0;
     n_D=0;
     P_d=0.0;
     P_d_antes=0.0;
@@ -188,33 +215,6 @@ int main()
 
 
         //--------------------------CÁLCULOS----------------------------//
-
-        
-        //Volvemos a generar la función de onda en cada paso
-
-        phi[0]=(0.0,0.0);
-        phi[N]=(0.0,0.0);
-
-        for (j=1; j<N-1; j++)
-        {   
-            phi[j]=exp(im_puro*(double)j*K_0)*exp(-1.0*(pow((double)j-x_0,2)/(2*pow(sigma,2))));
-
-            norma=norma+pow(abs(phi[j]),2);
-
-        }
-
-        //Normalizo la función de onda
-    
-        for (j=0; j<N; j++)
-        {   
-            phi[j]=phi[j]/sqrt(norma);
-        }
-
-        
-        //Guardo P_d de la iteración anterior
-
-        P_d_antes=P_d;
-
 
 
         //Calculo b, beta (iteraciones hacia atrás al igual que alpha)
@@ -259,40 +259,8 @@ int main()
         fich_norma << norma << endl;
 
 
-        //Calculo la probabilidad de encontrar la partícula a la derecha y la copio en un fichero
 
-        P_d=0.0;
-
-        for(j=4.0*N/5.0; j<N; j++)
-        {
-            phi[j]=chi[j]-phi[j];
-            norma=norma+pow(abs(phi[j]),2);
-
-            P_d=P_d+norma;
-        }
-
-        fich_probabilidad << n << ", " << P_d << endl;
-
-        //Compruebo si el valor de P_d obtenido es el máximo
-
-        if(P_d>P_d_antes) 
-        {
-            n_D=t;
-            P_d_max=P_d;
-
-        }
-
-
-        //Genero un número aleatorio entre 0 y 1 para ver si hemos detectado la partícula
-
-        p=rand()%2;
-
-        if (p>P_d)     m_T=m_T+1;
-        else             m_T=m_T;
-
-
-        //Calculo el coeficiente de transmisión
-        K=m_T/t;
+        //-----------------------VALORES ESPERADOS---------------------------//
 
 
         //Calculo los valores esperados de la posición, el momento, la energía cinética y la energía total
@@ -339,12 +307,80 @@ int main()
         momento=momento*(-1.0)*im_puro;
 
 
+        //Cálculo de la varianza y la media para estimar las incertidumbres de los valores medios
+
+
+
+
+
+        //----------------COEFICIENTE DE TRANSMISIÓN-----------------------//
+                
+        //Guardo P_d de la iteración anterior
+
+        P_d_antes=P_d;
+
+
+        //Calculo la probabilidad de encontrar la partícula a la derecha 
+
+        P_d=0.0;
+
+        for(j=4.0*N/5.0; j<N; j++)
+        {
+            P_d=P_d+pow(abs(phi[j]),2);
+        }
+
+       
+
+        
+        //Compruebo si el valor de P_d obtenido es el máximo
+
+        if(P_d>P_d_antes) 
+        {
+            n_D=n;
+            P_d_max=P_d;
+
+        }
+
+
+        //Genero un número aleatorio entre 0 y 1 para ver si hemos detectado la partícula
+
+        p=gsl_rng_uniform(tau);
+
+        if (p>P_d)
+        {
+            m_T=m_T+1.0;
+        }  
+
+        //Si no la detectamos a la derecha, la probabilidad a la derecha colapsa a  y la función de onda se redistribuye en el resto del espacio
+
+        for(j=4.0*N/5.0; j<N; j++)
+        {
+            phi[j]=0.0;
+        }
+
+        for(j=0; j<4.0*N/5.0; j++)
+        {
+            phi[j]=phi[j]/(1-P_d);
+        }
+        
+
+        
     }
+
+    //Calculo el coeficiente de transmisión 
+    K=(double)m_T/t;
+
+    fich_K << K << endl;
+    fich_K << K_teo << endl;
+    fich_K << endl;
+
+    //Escribo en un fichero el valor de la probabilidad
+    fich_probabilidad << n_D << ", " << P_d_max << endl;
+
 
     fich_funcion.close();
     fich_norma.close();
     fich_K.close();
-    fich_Pdmax.close();
     fich_posi.close();
     fich_energias.close();
     fich_momento.close();
