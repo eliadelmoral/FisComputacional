@@ -18,4 +18,6 @@ Se presentan dos programas voluntarios:
 2. Estudio de los mapas de Poincaré para distintas variables y distintas condiciones iniciales (archivos 'mapas_P.cpp')
 3. Cálculo de los coeficientes de Lyapunov para trayectorias infinitamente cercanas (archivo 'distancias_Lyapunov.cpp')
 
+En este último se ha empleado el superordenador puesto que en la consola virtual los vídeos tardan más tiempo en generarse
+
 
