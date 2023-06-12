@@ -12,3 +12,10 @@ Se presentan dos programas voluntarios:
 
 
 
+**A lo largo de la realización del programa del Péndulo doble se han realizado distintas tareas:**
+
+1. Simulación del péndulo doble (archivo 'p_doble.cpp')
+2. Estudio de los mapas de Poincaré para distintas variables y distintas condiciones iniciales (archivos 'mapas_P.cpp')
+3. Cálculo de los coeficientes de Lyapunov para trayectorias infinitamente cercanas (archivo 'distancias_Lyapunov.cpp')
+
+
